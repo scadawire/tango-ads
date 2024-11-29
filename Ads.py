@@ -39,10 +39,10 @@ class Ads(Device, metaclass=DeviceMeta):
         return time.time()
 
     @command(dtype_in=str)
-    def add_dynamic_attribute(self, register, topic, 
+    def add_dynamic_attribute(self, symbolName, 
             variable_type_name="DevString", min_value="", max_value="",
             unit="", write_type_name=""):
-        if topic == "": return
+        if symbolName == "": return
         prop = UserDefaultAttrProp()
         variableType = self.stringValueToVarType(variable_type_name)
         writeType = self.stringValueToWriteType(write_type_name)
@@ -52,12 +52,11 @@ class Ads(Device, metaclass=DeviceMeta):
             prop.set_max_value(max_value)
         if(unit != ""): 
             prop.set_unit(unit)
-        attr = Attr(topic, variableType, writeType)
+        attr = Attr(symbolName, variableType, writeType)
         attr.set_default_properties(prop)
-        register_parts = self.get_register_parts(register)
         self.add_attribute(attr, r_meth=self.read_dynamic_attr, w_meth=self.write_dynamic_attr)
-        self.dynamic_attribute_symbols[topic] = self.client.get_symbol(topic)
-        print("added dynamic attribute " + topic)
+        self.dynamic_attribute_symbols[symbolName] = self.client.get_symbol(symbolName)
+        print("added dynamic attribute " + symbolName)
 
     def stringValueToVarType(self, variable_type_name) -> CmdArgType:
         if(variable_type_name == "DevBoolean"):
@@ -109,7 +108,7 @@ class Ads(Device, metaclass=DeviceMeta):
             try:
                 attributes = json.loads(self.init_dynamic_attributes)
                 for attributeData in attributes:
-                    self.add_dynamic_attribute(attributeData["register"], attributeData["name"], 
+                    self.add_dynamic_attribute(attributeData["name"], 
                         attributeData.get("data_type", ""), attributeData.get("min_value", ""), attributeData.get("max_value", ""),
                         attributeData.get("unit", ""), attributeData.get("write_type", ""))
             except JSONDecodeError as e:
