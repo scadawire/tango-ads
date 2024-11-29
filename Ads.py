@@ -103,7 +103,8 @@ class Ads(Device, metaclass=DeviceMeta):
         self.set_state(DevState.INIT)
         self.get_device_properties(self.get_device_class())
         self.info_stream("Connecting to " + str(self.host) + ":" + str(self.port))
-        self.client. = pyads.Connection(self.host, self.port)
+        self.client = pyads.Connection(self.host, self.port)
+        self.client.open()
         if self.init_dynamic_attributes != "":
             try:
                 attributes = json.loads(self.init_dynamic_attributes)
@@ -113,7 +114,6 @@ class Ads(Device, metaclass=DeviceMeta):
                         attributeData.get("unit", ""), attributeData.get("write_type", ""))
             except JSONDecodeError as e:
                 raise e
-        self.connect()
         self.set_state(DevState.ON)
 
 if __name__ == "__main__":
