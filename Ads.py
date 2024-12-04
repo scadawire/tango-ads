@@ -94,7 +94,6 @@ class Ads(Device, metaclass=DeviceMeta):
         value = self.dynamic_attribute_symbols[name].read()
         self.debug_stream("read value " + str(name) + ": " + str(value))
         attr.set_value(value)
-        self.push_change_event(name, value)
 
     def write_dynamic_attr(self, attr):
         value = attr.get_write_value()
