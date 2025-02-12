@@ -101,11 +101,14 @@ class Ads(Device, metaclass=DeviceMeta):
         self.dynamic_attribute_symbols[name].write(value)
 
     def check_connection(self):
+        i = 0
         while(1):
             time.sleep(1.0)
-            if(self.client.is_open):
+            afterInit = i > 60 # allow async establishing for one minute before checking
+            if(afterInit and not self.client.is_open):
                 self.info_stream("connection is not open (anymore), since a reconnect is insufficient, shutdown for full restart...")
-                Util.instance().server_shutdown()
+                os._exit(1)
+            i = min(i + 1, 10000)
 
     def init_device(self):
         self.set_state(DevState.INIT)
