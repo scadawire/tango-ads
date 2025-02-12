@@ -12,7 +12,7 @@
 # var_double.read()
 
 import time
-from tango import AttrQuality, AttrWriteType, DispLevel, DevState, Attr, CmdArgType, UserDefaultAttrProp
+from tango import AttrQuality, AttrWriteType, DispLevel, DevState, Attr, CmdArgType, UserDefaultAttrProp, Util
 from tango.server import Device, attribute, command, DeviceMeta
 from tango.server import class_property, device_property
 from tango.server import run
@@ -104,8 +104,8 @@ class Ads(Device, metaclass=DeviceMeta):
         while(1):
             time.sleep(1.0)
             if(self.client.is_open):
-                print("connection is not open (anymore), try reconnect")
-                self.client.open()
+                self.info_stream("connection is not open (anymore), since a reconnect is insufficient, shutdown for full restart...")
+                Util.instance().server_shutdown()
 
     def init_device(self):
         self.set_state(DevState.INIT)
