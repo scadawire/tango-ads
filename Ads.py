@@ -100,6 +100,13 @@ class Ads(Device, metaclass=DeviceMeta):
         name = attr.get_name()
         self.dynamic_attribute_symbols[name].write(value)
 
+    def check_connection(self):
+        while(1):
+            time.sleep(1.0)
+            if(self.client.is_open):
+                print("connection is not open (anymore), try reconnect")
+                self.client.open()
+
     def init_device(self):
         self.set_state(DevState.INIT)
         self.get_device_properties(self.get_device_class())
@@ -118,6 +125,7 @@ class Ads(Device, metaclass=DeviceMeta):
             except JSONDecodeError as e:
                 raise e
         self.set_state(DevState.ON)
+        Thread(target=self.check_connection).start()
 
 if __name__ == "__main__":
     deviceServerName = os.getenv("DEVICE_SERVER_NAME")
