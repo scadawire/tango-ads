@@ -28,7 +28,7 @@ from json import JSONDecodeError
 class Ads(Device, metaclass=DeviceMeta):
     pass
 
-    host = device_property(dtype=str, default_value="127.0.0.1")
+    host = device_property(dtype=str, default_value="ignore")
     netid = device_property(dtype=str, default_value="127.0.0.1.1.1")
     port = device_property(dtype=int, default_value=851)
     init_dynamic_attributes = device_property(dtype=str, default_value="")
@@ -114,7 +114,7 @@ class Ads(Device, metaclass=DeviceMeta):
     def init_device(self):
         self.set_state(DevState.INIT)
         self.get_device_properties(self.get_device_class())
-        if(self.host != ""):
+        if(self.host != "" and self.host != "ignore"):
             self.info_stream("Connecting to " + str(self.netid) + ":" + str(self.port) + " on " + str(self.host))
             self.client = pyads.Connection(self.netid, self.port, self.host)
         else:
